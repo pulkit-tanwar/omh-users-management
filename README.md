@@ -25,5 +25,7 @@ go run main.go serve --env STAGE --host 0.0.0.0 --port 4000
   $ make test          # run unit tests
   $ make cover         # run code coverage report service (http://localhost:3001)
   $ make run           # run the service
+  $ make build         # compile standalone binary for docker container
+  $ make image         # build docker image  
 ```
 

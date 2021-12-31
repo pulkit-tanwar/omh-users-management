@@ -1,0 +1,14 @@
+# minimal docker container - see https://blog.codeship.com/building-minimal-docker-containers-for-go-applications/
+FROM scratch
+
+# default to run on port 80 (can be overridden by docker-run command)
+ENV PORT 80
+
+# default to run on any interface (otherwise wont be accessible outside of container)
+ENV HOST 0.0.0.0
+
+# add binary executable...
+ADD bin/omh-users-management /omh-users-management
+
+# ... and use it as the entry point
+CMD [ "/omh-users-management", "serve" ]
