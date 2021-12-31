@@ -10,4 +10,5 @@ type DBclient interface {
 	DBConnect() error
 	CreateUser(user model.User) error
 	RetrieveUser(string) (model.User, error)
+	ModifyUserDetails(model.User) (model.User, error)
 }

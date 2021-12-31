@@ -130,8 +130,45 @@ func (s *Server) FetchUserByUserName(context echo.Context) error {
 		context.JSON(http.StatusInternalServerError, model.NewErrorStructure(constant.FailedToReadItemFromDB, constant.FailedToReadItemFromDBMessage))
 		return err
 	} else if user.User_Name == "" {
-		context.NoContent(http.StatusNotFound)
+		context.JSON(http.StatusNotFound, model.NewErrorStructure(constant.UserNotFound, constant.UserNotFoundMessage))
 		return err
 	}
 	return context.JSON(http.StatusOK, user)
+}
+
+func (s *Server) UpdateUser(context echo.Context) error {
+
+	contentType := context.Request().Header.Get("Content-Type")
+	if contentType != "application/json" {
+		log.WithFields(log.Fields{
+			"ErrorDescription": "Content-Type Not Supported ",
+		}).Error("Content-Type not supported for UpdateUser Request")
+		return context.JSON(http.StatusBadRequest, model.NewErrorStructure(constant.ContentTypeNotSupported, constant.ContentTypeNotSupportedMessage))
+	}
+
+	request, err := validateRequestPayload(context)
+	if err != nil {
+		return err
+	}
+
+	if request.First_Name == "" && request.Phone_Number == "" && request.Last_Name == "" {
+		log.WithFields(log.Fields{
+			"ErrorCode":        constant.ModifiableFieldNotPresent,
+			"ErrorDescription": constant.ModifiableFieldNotPresentMessage,
+		}).Error("Modifiable fields are not present")
+		return context.JSON(http.StatusBadRequest, model.NewErrorStructure(constant.ModifiableFieldNotPresent, constant.ModifiableFieldNotPresentMessage))
+	}
+
+	response, err := database.DB.ModifyUserDetails(request)
+	if err != nil {
+		log.WithFields(log.Fields{
+			"ErrorCode":        constant.FailedToAddItemToDB,
+			"ErrorDescription": constant.FailedToAddItemToDBMessage,
+		}).Errorf("Error while updating user entry to DB. Err: %+v", err)
+		return context.JSON(http.StatusInternalServerError, model.NewErrorStructure(constant.FailedToAddItemToDB, constant.FailedToAddItemToDBMessage))
+	} else if response.User_Name == "" {
+		return context.JSON(http.StatusNotFound, model.NewErrorStructure(constant.UserNotFound, constant.UserNotFoundMessage))
+	}
+
+	return nil
 }

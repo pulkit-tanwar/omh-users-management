@@ -47,6 +47,12 @@ func (m *MockDatabaseClient) RetrieveUser(userName string) (model.User, error) {
 	return user, resp.Error(1)
 }
 
+func (m *MockDatabaseClient) ModifyUserDetails(user model.User) (model.User, error) {
+	resp := m.Mock.Called(nil)
+	userDetails := resp.Get(0).(model.User)
+	return userDetails, resp.Error(1)
+}
+
 func TestPing(t *testing.T) {
 	rr := serve(t, get("/api/v1/ping"), config.DefaultConfig())
 	assert.Equal(t, http.StatusOK, rr.Code)

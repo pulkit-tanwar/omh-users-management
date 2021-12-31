@@ -27,4 +27,13 @@ const (
 
 	FailedToReadItemFromDB        = 50009
 	FailedToReadItemFromDBMessage = "Cannot process request due to internal Server Error"
+
+	UserNotFound        = 50010
+	UserNotFoundMessage = "User Not Found"
+
+	ModifiableFieldNotPresent        = 50011
+	ModifiableFieldNotPresentMessage = "Modifiable fields are not present"
+
+	FailedToAddItemToDB        = 50012
+	FailedToAddItemToDBMessage = "Cannot process request due to internal Server Error"
 )

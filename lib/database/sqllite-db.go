@@ -2,7 +2,10 @@ package database
 
 import (
 	"database/sql"
+	"strconv"
+	"strings"
 
+	"github.com/fatih/structs"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/pulkit-tanwar/omh-users-management/lib/model"
 	log "github.com/sirupsen/logrus"
@@ -79,4 +82,39 @@ func (client *SQLDbClient) RetrieveUser(userName string) (model.User, error) {
 	}
 
 	return user, nil
+}
+
+func (client *SQLDbClient) ModifyUserDetails(user model.User) (model.User, error) {
+	query := "update users set date_modified = strftime('%d/%m/%Y, %H:%M','now'),"
+	m := structs.Map(user)
+	var values []interface{}
+	j := 0
+	response := model.User{}
+	for i := range m {
+		if v := m[i]; v != "" && i != "User_Name" && v != false {
+			j++
+			query = query + strings.ToLower(i) + "=$" + strconv.Itoa(j) + ","
+			values = append(values, v)
+		}
+	}
+	log.Debugf("Query to update users details: %s", query)
+
+	values = append(values, m["User_Name"])
+	j++
+	query = query[:len(query)-1] + " WHERE " + "user_name" + "=$" + strconv.Itoa(j)
+	query = query + " RETURNING " + "user_Name, first_name, last_name, phone_number"
+
+	row := client.db.QueryRow(query, values...)
+	err := row.Scan(
+		&response.User_Name,
+		&response.First_Name,
+		&response.Last_Name,
+		&response.Phone_Number)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return response, nil
+		}
+		return response, err
+	}
+	return response, nil
 }

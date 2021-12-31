@@ -130,3 +130,32 @@ func TestRetrieveUserDBFailed(t *testing.T) {
 		t.Errorf("there were unfulfilled expectations: %s", err)
 	}
 }
+
+func TestModifyUserDetailsSuccessful(t *testing.T) {
+	db, mock, err := sqlmock.New()
+	if err != nil {
+		t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
+	}
+	defer db.Close()
+	client := &database.SQLDbClient{}
+	client.SetMockDBInstance(db)
+	rows := sqlmock.NewRows([]string{"user_name", "first_name", "last_Name", "phone_number"}).
+		AddRow("user1@example.com", "firstName", "lastName", "123456")
+	mock.ExpectQuery("update users").WithArgs().WillReturnRows(rows)
+	user := model.User{
+		User_Name:    "user1@example.com",
+		First_Name:   "firstname",
+		Last_Name:    "lastname",
+		Phone_Number: "123456",
+	}
+
+	userdetails, err := client.ModifyUserDetails(user)
+	assert.Equal(t, nil, err)
+	assert.Equal(t, userdetails.User_Name, "user1@example.com")
+	assert.Equal(t, userdetails.First_Name, "firstName")
+	assert.Equal(t, userdetails.Last_Name, "lastName")
+	assert.Equal(t, userdetails.Phone_Number, "123456")
+	if err := mock.ExpectationsWereMet(); err != nil {
+		t.Errorf("there were unfulfilled expectations: %s", err)
+	}
+}
