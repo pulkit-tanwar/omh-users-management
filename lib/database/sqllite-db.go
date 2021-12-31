@@ -4,6 +4,7 @@ import (
 	"database/sql"
 
 	_ "github.com/mattn/go-sqlite3"
+	"github.com/pulkit-tanwar/omh-users-management/lib/model"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -42,6 +43,15 @@ func (client *SQLDbClient) DBConnect() error {
 	_, err = statement.Exec()
 	if err != nil {
 		log.Errorf("Error while executing statement. Error :%+v", err)
+		return err
+	}
+	return nil
+}
+
+func (client *SQLDbClient) CreateUser(user model.User) error {
+	query := "insert into users (user_name, first_name, last_name, phone_number, date_created, date_modified) values ($1, $2, $3, $4, $5, $6);"
+	_, err := client.db.Exec(query, user.User_Name, user.First_Name, user.Last_Name, user.Phone_Number, user.DateCreated, user.DateModified)
+	if err != nil {
 		return err
 	}
 	return nil

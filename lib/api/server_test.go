@@ -4,6 +4,7 @@ import (
 	"context"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"sync"
 	"testing"
 	"time"
@@ -52,4 +53,8 @@ func TestStartAndStop(t *testing.T) {
 
 func get(path string) *http.Request {
 	return httptest.NewRequest(echo.GET, path, nil)
+}
+
+func post(path string, body string) *http.Request {
+	return httptest.NewRequest(echo.POST, path, strings.NewReader(body))
 }

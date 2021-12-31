@@ -1,9 +1,12 @@
 package database
 
+import "github.com/pulkit-tanwar/omh-users-management/lib/model"
+
 // DB - Database Client var
 var DB DBclient
 
 // DBclient - Database Client interface
 type DBclient interface {
 	DBConnect() error
+	CreateUser(user model.User) error
 }
