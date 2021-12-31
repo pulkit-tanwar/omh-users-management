@@ -29,6 +29,8 @@ func NewServer(cfg *config.Config) *Server {
 	server.router.POST(path.Join(cfg.APIPath, "/api/v1/users"), server.CreateUser)
 	server.router.GET(path.Join(cfg.APIPath, "/api/v1/users/:userName"), server.FetchUserByUserName)
 	server.router.PUT(path.Join(cfg.APIPath, "/api/v1/users/:userName"), server.UpdateUser)
+	server.router.DELETE(path.Join(cfg.APIPath, "/api/v1/users/:userName"), server.DeleteUser)
+	server.router.GET(path.Join(cfg.APIPath, "/api/v1/users"), server.FetchAllUsers)
 	server.router.Use(middleware.Logger())
 
 	return server

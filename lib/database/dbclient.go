@@ -11,4 +11,6 @@ type DBclient interface {
 	CreateUser(user model.User) error
 	RetrieveUser(string) (model.User, error)
 	ModifyUserDetails(model.User) (model.User, error)
+	DeleteUser(string) error
+	GetAllUsers() ([]model.User, error)
 }

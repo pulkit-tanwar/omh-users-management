@@ -172,3 +172,34 @@ func (s *Server) UpdateUser(context echo.Context) error {
 
 	return nil
 }
+
+func (s *Server) DeleteUser(context echo.Context) error {
+	userName := context.Param("userName")
+
+	defer context.Request().Body.Close()
+
+	err := database.DB.DeleteUser(userName)
+	if err != nil {
+		log.WithFields(log.Fields{
+			"ErrorCode":        constant.FailedToDeleteItemFromDB,
+			"ErrorDescription": constant.FailedToDeleteItemFromDBMessage,
+		}).Errorf("Error deleting entry from DB. Err: %+v", err)
+		context.JSON(http.StatusInternalServerError, model.NewErrorStructure(constant.FailedToReadItemFromDB, constant.FailedToReadItemFromDBMessage))
+		return err
+	}
+	return nil
+}
+
+func (s *Server) FetchAllUsers(context echo.Context) error {
+
+	users, err := database.DB.GetAllUsers()
+	if err != nil {
+		log.WithFields(log.Fields{
+			"ErrorCode":        constant.FailedToReadItemFromDB,
+			"ErrorDescription": constant.FailedToReadItemFromDBMessage,
+		}).Errorf("Error while getting all users from DB. Err: %+v", err)
+		context.JSON(http.StatusInternalServerError, model.NewErrorStructure(constant.FailedToReadItemFromDB, constant.FailedToReadItemFromDBMessage))
+		return err
+	}
+	return context.JSON(http.StatusOK, model.GetCustomerResponse{Users: users})
+}

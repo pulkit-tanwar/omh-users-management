@@ -118,3 +118,42 @@ func (client *SQLDbClient) ModifyUserDetails(user model.User) (model.User, error
 	}
 	return response, nil
 }
+
+func (client *SQLDbClient) DeleteUser(userName string) error {
+	query := "delete from users where user_name = $1"
+	_, err := client.db.Exec(query, userName)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+//GetAllUsers - Fetch all users info
+func (client *SQLDbClient) GetAllUsers() ([]model.User, error) {
+	query := "SELECT user_name, first_name, last_name from users;"
+
+	rows, err := client.db.Query(query)
+	userList := []model.User{}
+
+	if err != nil {
+		return userList, err
+	}
+
+	defer rows.Close()
+
+	for rows.Next() {
+		user := model.User{}
+		err = rows.Scan(
+			&user.User_Name,
+			&user.First_Name,
+			&user.Last_Name,
+		)
+		if err != nil {
+			return userList, err
+		}
+
+		userList = append(userList, user)
+	}
+
+	return userList, nil
+}

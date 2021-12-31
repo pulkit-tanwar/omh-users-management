@@ -9,3 +9,8 @@ type User struct {
 	DateCreated  string `json:"dateCreated,omitempty"`
 	DateModified string `json:"dateModified,omitempty"`
 }
+
+//GetCustomerResponse structure
+type GetCustomerResponse struct {
+	Users []User `json:"Users"`
+}

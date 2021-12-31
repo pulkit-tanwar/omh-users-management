@@ -36,4 +36,7 @@ const (
 
 	FailedToAddItemToDB        = 50012
 	FailedToAddItemToDBMessage = "Cannot process request due to internal Server Error"
+
+	FailedToDeleteItemFromDB        = 50013
+	FailedToDeleteItemFromDBMessage = "Cannot process request due to internal Server Error"
 )
