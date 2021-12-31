@@ -44,7 +44,7 @@ HTTP Request Body
 } 
 ```
 
-HTTP Response Body
+201 Created, HTTP Response Body:
 ```bash
 {
     "userName": "Elon@example.com",
@@ -54,4 +54,28 @@ HTTP Response Body
     "dateModified": "2022-01-01T04:03:06+05:30"
 }
 ```
+
+## To fetch user details
+Endpoint: http://localhost:3000/api/v1/users/Elon@example.com
+
+200 Ok, HTTP Response Body :
+```bash
+{
+    "userName": "Elon@example.com",
+    "firstName": "Elon",
+    "lastName": "Musk",
+    "dateCreated": "2022-01-01T04:03:06+05:30",
+    "dateModified": "2022-01-01T04:03:06+05:30"
+}
+```
+
+## Next Steps in this project:
+1. We'll all Swagger documentation for all the APIs.
+2. Currently we are hard deleting the user, we'll modify to soft delete a user.
+3. Add the functionality to rent and sale properties
+
+
+
+
+
 
