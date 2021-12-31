@@ -6,6 +6,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/pulkit-tanwar/omh-users-management/lib/api"
 	"github.com/pulkit-tanwar/omh-users-management/lib/config"
+	"github.com/pulkit-tanwar/omh-users-management/lib/database"
 	log "github.com/sirupsen/logrus"
 	"github.com/urfave/cli"
 )
@@ -71,6 +72,11 @@ func RunServer(c *cli.Context) error {
 	log.Infof("PORT: %d", cfg.Port)
 	log.Infof("API PATH: %s", cfg.APIPath)
 
+	err := initDatabaseClient()
+	if err != nil {
+		return errors.Wrap(err, "Failed to start session")
+	}
+
 	if err := RunHTTPServer(cfg); err != nil {
 		return err
 	}
@@ -87,4 +93,9 @@ func RunHTTPServer(cfg *config.Config) error {
 		return errors.Wrap(err, "server.Start failed")
 	}
 	return nil
+}
+
+func initDatabaseClient() error {
+	database.DB = &database.SQLDbClient{}
+	return database.DB.DBConnect()
 }
