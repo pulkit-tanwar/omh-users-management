@@ -3,6 +3,8 @@ package main
 import (
 	"os"
 
+	"github.com/pkg/errors"
+	"github.com/pulkit-tanwar/omh-users-management/lib/api"
 	"github.com/pulkit-tanwar/omh-users-management/lib/config"
 	log "github.com/sirupsen/logrus"
 	"github.com/urfave/cli"
@@ -69,5 +71,20 @@ func RunServer(c *cli.Context) error {
 	log.Infof("PORT: %d", cfg.Port)
 	log.Infof("API PATH: %s", cfg.APIPath)
 
+	if err := RunHTTPServer(cfg); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// RunHTTPServer - Function that will run HTTP Server
+func RunHTTPServer(cfg *config.Config) error {
+	server := api.NewServer(cfg)
+	err := server.Start()
+	if err != nil {
+		log.Errorf("Error while starting HTTP Server. Err:%+v", err)
+		return errors.Wrap(err, "server.Start failed")
+	}
 	return nil
 }
