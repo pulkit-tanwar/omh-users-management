@@ -24,4 +24,7 @@ const (
 
 	FailedToUnmarshalRequestBody        = 50008
 	FailedToUnmarshalRequestBodyMessage = "Internal Server Error"
+
+	FailedToReadItemFromDB        = 50009
+	FailedToReadItemFromDBMessage = "Cannot process request due to internal Server Error"
 )

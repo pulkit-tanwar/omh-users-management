@@ -56,3 +56,27 @@ func (client *SQLDbClient) CreateUser(user model.User) error {
 	}
 	return nil
 }
+
+func (client *SQLDbClient) RetrieveUser(userName string) (model.User, error) {
+	query := "select user_name, first_name, last_name, phone_number, date_created, date_modified from users where user_name = $1"
+
+	row := client.db.QueryRow(query, userName)
+	user := model.User{}
+
+	err := row.Scan(
+		&user.User_Name,
+		&user.First_Name,
+		&user.Last_Name,
+		&user.Phone_Number,
+		&user.DateCreated,
+		&user.DateModified)
+
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return user, nil
+		}
+		return user, err
+	}
+
+	return user, nil
+}

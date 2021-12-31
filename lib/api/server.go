@@ -27,6 +27,7 @@ func NewServer(cfg *config.Config) *Server {
 
 	server.router.GET(path.Join(cfg.APIPath, "/api/v1/ping"), server.Ping)
 	server.router.POST(path.Join(cfg.APIPath, "/api/v1/users"), server.CreateUser)
+	server.router.GET(path.Join(cfg.APIPath, "/api/v1/users/:userName"), server.FetchUserByUserName)
 	server.router.Use(middleware.Logger())
 
 	return server

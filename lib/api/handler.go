@@ -114,3 +114,24 @@ func validateRequestPayload(c echo.Context) (model.User, error) {
 
 	return user, nil
 }
+
+// FetchUser - Retrieve User info
+func (s *Server) FetchUserByUserName(context echo.Context) error {
+	userName := context.Param("userName")
+
+	defer context.Request().Body.Close()
+
+	user, err := database.DB.RetrieveUser(userName)
+	if err != nil {
+		log.WithFields(log.Fields{
+			"ErrorCode":        constant.FailedToReadItemFromDB,
+			"ErrorDescription": constant.FailedToReadItemFromDBMessage,
+		}).Errorf("Error while fetching Customer entry from DB. Err: %+v", err)
+		context.JSON(http.StatusInternalServerError, model.NewErrorStructure(constant.FailedToReadItemFromDB, constant.FailedToReadItemFromDBMessage))
+		return err
+	} else if user.User_Name == "" {
+		context.NoContent(http.StatusNotFound)
+		return err
+	}
+	return context.JSON(http.StatusOK, user)
+}

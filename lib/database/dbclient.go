@@ -9,4 +9,5 @@ var DB DBclient
 type DBclient interface {
 	DBConnect() error
 	CreateUser(user model.User) error
+	RetrieveUser(string) (model.User, error)
 }
